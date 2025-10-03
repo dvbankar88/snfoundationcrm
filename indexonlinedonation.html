@@ -1,0 +1,1948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Donation Module - SN Group Foundation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .status-pending { background-color: #fef3c7; color: #92400e; }
+        .status-success { background-color: #d1fae5; color: #065f46; }
+        .status-failed { background-color: #fee2e2; color: #991b1b; }
+        .status-refunded { background-color: #e0e7ff; color: #3730a3; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                        <span class="text-2xl font-bold text-purple-600">SN</span>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold">Website Donation Module</h1>
+                        <p class="text-purple-100">SN Group Foundation - www.sngroupfoundation.org</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-all">
+                        Export Data
+                    </button>
+                    <button class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-all">
+                        Settings
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-6 py-8">
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">Total Online Donations</p>
+                        <p class="text-3xl font-bold text-gray-900">₹12,45,680</p>
+                        <p class="text-green-600 text-sm">847 donors • +15.3% from last month</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                        <span class="text-green-600 text-xl">💰</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">Successful Transactions</p>
+                        <p class="text-3xl font-bold text-gray-900">847</p>
+                        <p class="text-blue-600 text-sm">623 unique donors • 98.2% success rate</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span class="text-blue-600 text-xl">✅</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">Average Donation</p>
+                        <p class="text-3xl font-bold text-gray-900">₹1,470</p>
+                        <p class="text-purple-600 text-sm">Per transaction</p>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                        <span class="text-purple-600 text-xl">📊</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">Total Unique Donors</p>
+                        <p class="text-3xl font-bold text-gray-900">623</p>
+                        <p class="text-orange-600 text-sm">156 repeat contributors</p>
+                    </div>
+                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                        <span class="text-orange-600 text-xl">🏆</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Search and Filters -->
+        <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Search & Filter Donations</h3>
+            
+            <!-- Search Bar -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Search Donations</label>
+                <div class="relative">
+                    <input type="text" id="searchInput" placeholder="Search by donor name, email, receipt number, or transaction ID..." 
+                           class="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                           onkeyup="searchDonations()">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <span class="text-gray-400">🔍</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
+                    <select id="dateFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        <option>Last 30 days</option>
+                        <option>Last 3 months</option>
+                        <option>Last 6 months</option>
+                        <option>Custom range</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Program</label>
+                    <select id="programFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        <option>All Programs</option>
+                        <option>Tree Plantation</option>
+                        <option>Education Support</option>
+                        <option>Healthcare</option>
+                        <option>General Fund</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Payment Mode</label>
+                    <select id="paymentFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        <option>All Modes</option>
+                        <option>Credit Card</option>
+                        <option>Debit Card</option>
+                        <option>UPI</option>
+                        <option>Net Banking</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <select id="statusFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        <option>All Status</option>
+                        <option>Success</option>
+                        <option>Pending</option>
+                        <option>Failed</option>
+                        <option>Refunded</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-4 flex space-x-3">
+                <button onclick="applyFilters()" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition-colors">
+                    Apply Filters
+                </button>
+                <button onclick="resetFilters()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg transition-colors">
+                    Reset
+                </button>
+            </div>
+        </div>
+
+        <!-- Donations Table -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-gray-900">Recent Website Donations</h3>
+                <div class="flex space-x-2">
+                    <button onclick="exportToExcel()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                        Export Excel
+                    </button>
+                    <button onclick="exportToPDF()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                        Export PDF
+                    </button>
+                    <button onclick="printTable()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                        Print Table
+                    </button>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Receipt No.</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Donor</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Program</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Mode</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">80G</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="donationsTable">
+                        <!-- Table rows will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Auto-Pay Donation Section -->
+        <div class="mt-6 bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-900">Auto-Pay Donation Management</h3>
+                <div class="flex space-x-3">
+                    <button onclick="showAutoPayTab('active')" id="activeTab" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                        Active Auto-Pay (12)
+                    </button>
+                    <button onclick="showAutoPayTab('setup')" id="setupTab" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                        Setup New Auto-Pay
+                    </button>
+                    <button onclick="showAutoPayTab('closed')" id="closedTab" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                        Closed Auto-Pay (5)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Active Auto-Pay Tab -->
+            <div id="activeAutoPayTab" class="auto-pay-tab">
+                <div class="mb-4">
+                    <h4 class="font-semibold text-gray-900 mb-3">Active Regular Donors</h4>
+                    
+                    <!-- Auto-Pay Search -->
+                    <div class="mb-4">
+                        <div class="relative max-w-md">
+                            <input type="text" id="autoPaySearchInput" placeholder="Search auto-pay donors..." 
+                                   class="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                   onkeyup="searchAutoPay()">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span class="text-gray-400">🔍</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium text-green-800">Total Active</p>
+                                    <p class="text-2xl font-bold text-green-900">12</p>
+                                </div>
+                                <span class="text-green-600 text-2xl">🔄</span>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium text-blue-800">Monthly Revenue</p>
+                                    <p class="text-2xl font-bold text-blue-900">₹45,600</p>
+                                    <p class="text-blue-600 text-sm">12 active donors</p>
+                                </div>
+                                <span class="text-blue-600 text-2xl">💰</span>
+                            </div>
+                        </div>
+                        <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium text-purple-800">Next Collection</p>
+                                    <p class="text-lg font-bold text-purple-900">Jan 20, 2025</p>
+                                </div>
+                                <span class="text-purple-600 text-2xl">📅</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Donor Name</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Frequency</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Next Payment</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Program</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200" id="activeAutoPayTable">
+                            <!-- Will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Setup New Auto-Pay Tab -->
+            <div id="setupAutoPayTab" class="auto-pay-tab hidden">
+                <div class="max-w-2xl">
+                    <h4 class="font-semibold text-gray-900 mb-4">Setup New Auto-Pay Donation</h4>
+                    <form class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Donor Name</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Enter donor name">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                                <input type="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Enter email address">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                                <input type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Enter phone number">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">PAN Number (Optional)</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Enter PAN number">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Donation Amount</label>
+                                <input type="number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="₹ Amount">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Frequency</label>
+                                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                    <option>Monthly</option>
+                                    <option>Quarterly</option>
+                                    <option>Half-Yearly</option>
+                                    <option>Yearly</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+                                <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Program</label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                <option>General Fund</option>
+                                <option>Tree Plantation</option>
+                                <option>Education Support</option>
+                                <option>Healthcare</option>
+                                <option>Emergency Relief</option>
+                            </select>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button type="button" onclick="setupAutoPay()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors">
+                                Setup Auto-Pay
+                            </button>
+                            <button type="button" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg transition-colors">
+                                Reset Form
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Closed Auto-Pay Tab -->
+            <div id="closedAutoPayTab" class="auto-pay-tab hidden">
+                <div class="mb-4">
+                    <h4 class="font-semibold text-gray-900 mb-3">Closed/Cancelled Auto-Pay Subscriptions</h4>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Donor Name</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Duration</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total Collected</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Closed Date</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Reason</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200" id="closedAutoPayTable">
+                            <!-- Will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Webhook Status Monitor -->
+        <div class="mt-6 bg-white rounded-xl shadow-md p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Webhook Status Monitor</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                        <div>
+                            <p class="font-medium text-green-800">Razorpay Gateway</p>
+                            <p class="text-sm text-green-600">Connected & Active</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                        <div>
+                            <p class="font-medium text-blue-800">PayU Gateway</p>
+                            <p class="text-sm text-blue-600">Connected & Active</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 bg-purple-500 rounded-full mr-3"></div>
+                        <div>
+                            <p class="font-medium text-purple-800">Stripe Gateway</p>
+                            <p class="text-sm text-purple-600">Connected & Active</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div id="receiptModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Donation Receipt</h3>
+                    <button onclick="closeReceiptModal()" class="text-gray-400 hover:text-gray-600">
+                        <span class="text-2xl">&times;</span>
+                    </button>
+                </div>
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-purple-600 text-2xl">📄</span>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Receipt Generated Successfully</h4>
+                    <p class="text-gray-600 text-sm mb-4">Receipt WEB-2025-00025 has been generated and emailed to the donor.</p>
+                    <div class="flex space-x-3">
+                        <button class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                            Download PDF
+                        </button>
+                        <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm transition-colors">
+                            Resend Email
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Donor Details Modal -->
+    <div id="donorModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full mx-4">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Donor Details</h3>
+                    <button onclick="closeDonorModal()" class="text-gray-400 hover:text-gray-600">
+                        <span class="text-2xl">&times;</span>
+                    </button>
+                </div>
+                <div id="donorDetailsContent">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit 80G Modal -->
+    <div id="edit80GModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Edit 80G Status</h3>
+                    <button onclick="close80GModal()" class="text-gray-400 hover:text-gray-600">
+                        <span class="text-2xl">&times;</span>
+                    </button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">80G Eligibility</label>
+                        <select id="80GStatus" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            <option value="true">Eligible for 80G</option>
+                            <option value="false">Not Eligible</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">PAN Number (Optional)</label>
+                        <input type="text" id="panNumber" placeholder="Enter PAN number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    </div>
+                    <div class="flex space-x-3">
+                        <button onclick="save80GStatus()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                            Save Changes
+                        </button>
+                        <button onclick="close80GModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm transition-colors">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Auto-Pay Modal -->
+    <div id="editAutoPayModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full mx-4">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Edit Auto-Pay Subscription</h3>
+                    <button onclick="closeEditAutoPayModal()" class="text-gray-400 hover:text-gray-600">
+                        <span class="text-2xl">&times;</span>
+                    </button>
+                </div>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Donor Name</label>
+                            <input type="text" id="editDonorName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <input type="email" id="editDonorEmail" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Amount</label>
+                            <input type="number" id="editAmount" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Frequency</label>
+                            <select id="editFrequency" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                <option>Monthly</option>
+                                <option>Quarterly</option>
+                                <option>Half-Yearly</option>
+                                <option>Yearly</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Program</label>
+                        <select id="editProgram" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            <option>General Fund</option>
+                            <option>Tree Plantation</option>
+                            <option>Education Support</option>
+                            <option>Healthcare</option>
+                            <option>Emergency Relief</option>
+                        </select>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button onclick="saveAutoPayChanges()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                            Save Changes
+                        </button>
+                        <button onclick="closeEditAutoPayModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm transition-colors">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment History Modal -->
+    <div id="paymentHistoryModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900">Payment History</h3>
+                        <p class="text-gray-600" id="historyDonorInfo">Auto-Pay Subscription Details</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button onclick="printPaymentHistory()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors flex items-center space-x-2">
+                            <span>🖨️</span>
+                            <span>Print History</span>
+                        </button>
+                        <button onclick="closePaymentHistoryModal()" class="text-gray-400 hover:text-gray-600">
+                            <span class="text-2xl">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
+                <!-- Subscription Summary -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-blue-800 text-sm font-medium">Total Payments</p>
+                                <p class="text-2xl font-bold text-blue-900" id="totalPayments">0</p>
+                            </div>
+                            <span class="text-blue-600 text-2xl">📊</span>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4 border border-green-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-green-800 text-sm font-medium">Total Amount</p>
+                                <p class="text-2xl font-bold text-green-900" id="totalAmount">₹0</p>
+                            </div>
+                            <span class="text-green-600 text-2xl">💰</span>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-purple-800 text-sm font-medium">Success Rate</p>
+                                <p class="text-2xl font-bold text-purple-900" id="successRate">100%</p>
+                            </div>
+                            <span class="text-purple-600 text-2xl">✅</span>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-4 border border-orange-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-orange-800 text-sm font-medium">Active Since</p>
+                                <p class="text-lg font-bold text-orange-900" id="activeSince">-</p>
+                            </div>
+                            <span class="text-orange-600 text-2xl">📅</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Timeline -->
+                <div class="mb-6">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">Payment Timeline</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse bg-white rounded-lg shadow-sm">
+                            <thead>
+                                <tr class="bg-gradient-to-r from-gray-50 to-gray-100">
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200">Date</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200">Amount</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200">Transaction ID</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200">Status</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200">Receipt</th>
+                                </tr>
+                            </thead>
+                            <tbody id="paymentHistoryTable" class="divide-y divide-gray-200">
+                                <!-- Will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Upcoming Payments -->
+                <div class="bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-lg p-6 border border-indigo-200">
+                    <h4 class="text-lg font-semibold text-indigo-900 mb-3 flex items-center">
+                        <span class="mr-2">🔮</span>
+                        Upcoming Payments
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="upcomingPayments">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Confirm Delete</h3>
+                    <button onclick="closeDeleteModal()" class="text-gray-400 hover:text-gray-600">
+                        <span class="text-2xl">&times;</span>
+                    </button>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-red-600 text-2xl">⚠️</span>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Delete Donation Record?</h4>
+                    <p class="text-gray-600 text-sm mb-4">This action cannot be undone. The donation record will be permanently deleted.</p>
+                    <div class="flex space-x-3">
+                        <button onclick="confirmDelete()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                            Delete
+                        </button>
+                        <button onclick="closeDeleteModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm transition-colors">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample auto-pay data - 12 active donors generating ₹45,600 monthly
+        const activeAutoPay = [
+            {
+                id: 'AP001',
+                donor: 'Rajesh Kumar',
+                email: 'rajesh@email.com',
+                amount: 5000,
+                frequency: 'Monthly',
+                nextPayment: '2025-01-20',
+                program: 'Tree Plantation',
+                status: 'Active',
+                startDate: '2024-06-15',
+                paymentHistory: [
+                    { date: '2024-12-15', amount: 5000, status: 'Success', txnId: 'AUTO001' },
+                    { date: '2024-11-15', amount: 5000, status: 'Success', txnId: 'AUTO002' },
+                    { date: '2024-10-15', amount: 5000, status: 'Success', txnId: 'AUTO003' }
+                ]
+            },
+            {
+                id: 'AP002',
+                donor: 'Priya Sharma',
+                email: 'priya@email.com',
+                amount: 2500,
+                frequency: 'Monthly',
+                nextPayment: '2025-01-22',
+                program: 'Education Support',
+                status: 'Active',
+                startDate: '2024-08-10',
+                paymentHistory: [
+                    { date: '2024-12-22', amount: 2500, status: 'Success', txnId: 'AUTO004' },
+                    { date: '2024-11-22', amount: 2500, status: 'Success', txnId: 'AUTO005' }
+                ]
+            },
+            {
+                id: 'AP003',
+                donor: 'Amit Patel',
+                email: 'amit@email.com',
+                amount: 10000,
+                frequency: 'Quarterly',
+                nextPayment: '2025-03-15',
+                program: 'Healthcare',
+                status: 'Active',
+                startDate: '2024-03-15',
+                paymentHistory: [
+                    { date: '2024-12-15', amount: 10000, status: 'Success', txnId: 'AUTO006' },
+                    { date: '2024-09-15', amount: 10000, status: 'Success', txnId: 'AUTO007' }
+                ]
+            },
+            {
+                id: 'AP004',
+                donor: 'Sunita Gupta',
+                email: 'sunita@email.com',
+                amount: 3000,
+                frequency: 'Monthly',
+                nextPayment: '2025-01-25',
+                program: 'General Fund',
+                status: 'Active',
+                startDate: '2024-05-25',
+                paymentHistory: [
+                    { date: '2024-12-25', amount: 3000, status: 'Success', txnId: 'AUTO008' }
+                ]
+            },
+            {
+                id: 'AP005',
+                donor: 'Vikram Singh',
+                email: 'vikram@email.com',
+                amount: 4000,
+                frequency: 'Monthly',
+                nextPayment: '2025-01-18',
+                program: 'Tree Plantation',
+                status: 'Active',
+                startDate: '2024-07-18',
+                paymentHistory: [
+                    { date: '2024-12-18', amount: 4000, status: 'Success', txnId: 'AUTO009' }
+                ]
+            },
+            {
+                id: 'AP006',
+                donor: 'Meera Joshi',
+                email: 'meera@email.com',
+                amount: 1500,
+                frequency: 'Monthly',
+                nextPayment: '2025-01-30',
+                program: 'Education Support',
+                status: 'Active',
+                startDate: '2024-09-30',
+                paymentHistory: [
+                    { date: '2024-12-30', amount: 1500, status: 'Success', txnId: 'AUTO010' }
+                ]
+            },
+            {
+                id: 'AP007',
+                donor: 'Arjun Reddy',
+                email: 'arjun@email.com',
+                amount: 6000,
+                frequency: 'Monthly',
+                nextPayment: '2025-01-12',
+                program: 'Healthcare',
+                status: 'Active',
+                startDate: '2024-04-12',
+                paymentHistory: [
+                    { date: '2024-12-12', amount: 6000, status: 'Success', txnId: 'AUTO011' }
+                ]
+            },
+            {
+                id: 'AP008',
+                donor: 'Kavya Nair',
+                email: 'kavya@email.com',
+                amount: 2000,
+                frequency: 'Monthly',
+                nextPayment: '2025-01-28',
+                program: 'General Fund',
+                status: 'Active',
+                startDate: '2024-10-28',
+                paymentHistory: [
+                    { date: '2024-12-28', amount: 2000, status: 'Success', txnId: 'AUTO012' }
+                ]
+            },
+            {
+                id: 'AP009',
+                donor: 'Rohit Agarwal',
+                email: 'rohit@email.com',
+                amount: 3500,
+                frequency: 'Monthly',
+                nextPayment: '2025-01-15',
+                program: 'Tree Plantation',
+                status: 'Active',
+                startDate: '2024-06-15',
+                paymentHistory: [
+                    { date: '2024-12-15', amount: 3500, status: 'Success', txnId: 'AUTO013' }
+                ]
+            },
+            {
+                id: 'AP010',
+                donor: 'Deepika Rao',
+                email: 'deepika@email.com',
+                amount: 2800,
+                frequency: 'Monthly',
+                nextPayment: '2025-01-20',
+                program: 'Education Support',
+                status: 'Active',
+                startDate: '2024-08-20',
+                paymentHistory: [
+                    { date: '2024-12-20', amount: 2800, status: 'Success', txnId: 'AUTO014' }
+                ]
+            },
+            {
+                id: 'AP011',
+                donor: 'Kiran Kumar',
+                email: 'kiran@email.com',
+                amount: 4200,
+                frequency: 'Monthly',
+                nextPayment: '2025-01-25',
+                program: 'Healthcare',
+                status: 'Active',
+                startDate: '2024-11-25',
+                paymentHistory: [
+                    { date: '2024-12-25', amount: 4200, status: 'Success', txnId: 'AUTO015' }
+                ]
+            },
+            {
+                id: 'AP012',
+                donor: 'Anita Desai',
+                email: 'anita@email.com',
+                amount: 1600,
+                frequency: 'Monthly',
+                nextPayment: '2025-01-10',
+                program: 'General Fund',
+                status: 'Active',
+                startDate: '2024-12-10',
+                paymentHistory: [
+                    { date: '2024-12-10', amount: 1600, status: 'Success', txnId: 'AUTO016' }
+                ]
+            }
+        ];
+
+        const closedAutoPay = [
+            {
+                id: 'AP101',
+                donor: 'Sunita Gupta',
+                email: 'sunita@email.com',
+                amount: 3000,
+                frequency: 'Monthly',
+                duration: '8 months',
+                totalCollected: 24000,
+                closedDate: '2024-12-31',
+                reason: 'Completed by donor'
+            },
+            {
+                id: 'AP102',
+                donor: 'Vikram Singh',
+                email: 'vikram@email.com',
+                amount: 1500,
+                frequency: 'Monthly',
+                duration: '6 months',
+                totalCollected: 9000,
+                closedDate: '2024-11-15',
+                reason: 'Payment failure'
+            }
+        ];
+
+        // Sample donation data
+        const donations = [
+            {
+                receiptNo: 'WEB-2025-00025',
+                donor: 'Rajesh Kumar',
+                email: 'rajesh@email.com',
+                amount: 5000,
+                program: 'Tree Plantation',
+                paymentMode: 'UPI',
+                transactionId: 'TXN123456789',
+                status: 'Success',
+                date: '2025-01-15',
+                has80G: true
+            },
+            {
+                receiptNo: 'WEB-2025-00024',
+                donor: 'Priya Sharma',
+                email: 'priya@email.com',
+                amount: 2500,
+                program: 'Education Support',
+                paymentMode: 'Credit Card',
+                transactionId: 'TXN123456788',
+                status: 'Success',
+                date: '2025-01-15',
+                has80G: true
+            },
+            {
+                receiptNo: 'WEB-2025-00023',
+                donor: 'Amit Patel',
+                email: 'amit@email.com',
+                amount: 1000,
+                program: 'Healthcare',
+                paymentMode: 'Net Banking',
+                transactionId: 'TXN123456787',
+                status: 'Pending',
+                date: '2025-01-14',
+                has80G: false
+            },
+            {
+                receiptNo: 'WEB-2025-00022',
+                donor: 'Sunita Gupta',
+                email: 'sunita@email.com',
+                amount: 7500,
+                program: 'General Fund',
+                paymentMode: 'Debit Card',
+                transactionId: 'TXN123456786',
+                status: 'Success',
+                date: '2025-01-14',
+                has80G: true
+            },
+            {
+                receiptNo: 'WEB-2025-00021',
+                donor: 'Vikram Singh',
+                email: 'vikram@email.com',
+                amount: 3000,
+                program: 'Tree Plantation',
+                paymentMode: 'UPI',
+                transactionId: 'TXN123456785',
+                status: 'Failed',
+                date: '2025-01-13',
+                has80G: false
+            }
+        ];
+
+        // Search and filter functions
+        function searchDonations() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            filteredDonations = donations.filter(donation => 
+                donation.donor.toLowerCase().includes(searchTerm) ||
+                donation.email.toLowerCase().includes(searchTerm) ||
+                donation.receiptNo.toLowerCase().includes(searchTerm) ||
+                donation.transactionId.toLowerCase().includes(searchTerm) ||
+                donation.program.toLowerCase().includes(searchTerm)
+            );
+            populateTable();
+        }
+
+        function applyFilters() {
+            const dateFilter = document.getElementById('dateFilter').value;
+            const programFilter = document.getElementById('programFilter').value;
+            const paymentFilter = document.getElementById('paymentFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            filteredDonations = donations.filter(donation => {
+                let matches = true;
+                
+                if (programFilter !== 'All Programs' && donation.program !== programFilter) {
+                    matches = false;
+                }
+                if (paymentFilter !== 'All Modes' && donation.paymentMode !== paymentFilter) {
+                    matches = false;
+                }
+                if (statusFilter !== 'All Status' && donation.status !== statusFilter) {
+                    matches = false;
+                }
+                
+                return matches;
+            });
+            
+            populateTable();
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('dateFilter').selectedIndex = 0;
+            document.getElementById('programFilter').selectedIndex = 0;
+            document.getElementById('paymentFilter').selectedIndex = 0;
+            document.getElementById('statusFilter').selectedIndex = 0;
+            filteredDonations = [...donations];
+            populateTable();
+        }
+
+        function exportToExcel() {
+            const csvContent = "data:text/csv;charset=utf-8," + 
+                "Receipt No,Donor Name,Email,Amount,Program,Payment Mode,Transaction ID,Status,Date,80G Eligible\n" +
+                filteredDonations.map(d => 
+                    `${d.receiptNo},${d.donor},${d.email},${d.amount},${d.program},${d.paymentMode},${d.transactionId},${d.status},${d.date},${d.has80G ? 'Yes' : 'No'}`
+                ).join("\n");
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "donations_export.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function exportToPDF() {
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Donations Report</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 12px; }
+                        th { background-color: #f2f2f2; }
+                        .header { text-align: center; margin-bottom: 20px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>SN Group Foundation</h1>
+                        <h2>Donations Report</h2>
+                        <p>Generated on: ${new Date().toLocaleDateString()}</p>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Receipt No</th>
+                                <th>Donor</th>
+                                <th>Amount</th>
+                                <th>Program</th>
+                                <th>Payment Mode</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${filteredDonations.map(d => `
+                                <tr>
+                                    <td>${d.receiptNo}</td>
+                                    <td>${d.donor}</td>
+                                    <td>₹${d.amount.toLocaleString()}</td>
+                                    <td>${d.program}</td>
+                                    <td>${d.paymentMode}</td>
+                                    <td>${d.status}</td>
+                                    <td>${d.date}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function printTable() {
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Donations Table</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; }
+                        table { width: 100%; border-collapse: collapse; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                        th { background-color: #f2f2f2; }
+                        .header { text-align: center; margin-bottom: 20px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>SN Group Foundation - Donations</h1>
+                        <p>Print Date: ${new Date().toLocaleDateString()}</p>
+                    </div>
+                    ${document.querySelector('.overflow-x-auto').innerHTML}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Auto-pay search function
+        function searchAutoPay() {
+            const searchTerm = document.getElementById('autoPaySearchInput').value.toLowerCase();
+            filteredAutoPay = activeAutoPay.filter(autoPay => 
+                autoPay.donor.toLowerCase().includes(searchTerm) ||
+                autoPay.email.toLowerCase().includes(searchTerm) ||
+                autoPay.program.toLowerCase().includes(searchTerm) ||
+                autoPay.id.toLowerCase().includes(searchTerm)
+            );
+            populateActiveAutoPayTable();
+        }
+
+        // Populate donations table
+        function populateTable() {
+            const tableBody = document.getElementById('donationsTable');
+            tableBody.innerHTML = '';
+
+            filteredDonations.forEach(donation => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                
+                const statusClass = `status-${donation.status.toLowerCase()}`;
+                
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${donation.receiptNo}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${donation.donor}</div>
+                        <div class="text-sm text-gray-500">${donation.email}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">₹${donation.amount.toLocaleString()}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${donation.program}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${donation.paymentMode}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${donation.transactionId}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 py-1 text-xs font-medium rounded-full ${statusClass}">${donation.status}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        ${donation.has80G ? '<span class="text-green-600">✓ Eligible</span>' : '<span class="text-gray-400">Not Available</span>'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="viewReceipt('${donation.receiptNo}')" class="text-purple-600 hover:text-purple-900 text-xs">View Receipt</button>
+                            <button onclick="printReceipt('${donation.receiptNo}')" class="text-green-600 hover:text-green-900 text-xs">Print</button>
+                            <button onclick="viewDonorDetails('${donation.donor}', '${donation.email}')" class="text-blue-600 hover:text-blue-900 text-xs">Donor Details</button>
+                            <button onclick="edit80G('${donation.receiptNo}', ${donation.has80G})" class="text-orange-600 hover:text-orange-900 text-xs">Edit 80G</button>
+                            ${donation.has80G ? `<button onclick="send80GReceipt('${donation.receiptNo}', '${donation.email}')" class="text-indigo-600 hover:text-indigo-900 text-xs">Send 80G</button>` : ''}
+                            <button onclick="resendEmail('${donation.email}')" class="text-cyan-600 hover:text-cyan-900 text-xs">Resend Email</button>
+                            <button onclick="deleteDonation('${donation.receiptNo}')" class="text-red-600 hover:text-red-900 text-xs">Delete</button>
+                        </div>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+
+
+        // Modal functions
+        function viewReceipt(receiptNo) {
+            document.getElementById('receiptModal').classList.remove('hidden');
+            document.getElementById('receiptModal').classList.add('flex');
+        }
+
+        function closeReceiptModal() {
+            document.getElementById('receiptModal').classList.add('hidden');
+            document.getElementById('receiptModal').classList.remove('flex');
+        }
+
+        let filteredDonations = [...donations];
+        let filteredAutoPay = [...activeAutoPay];
+        let currentEditingAutoPayId = null;
+
+        function printReceipt(receiptNo) {
+            const donation = donations.find(d => d.receiptNo === receiptNo);
+            if (donation) {
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <html>
+                    <head>
+                        <title>Receipt - ${receiptNo}</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; padding: 20px; }
+                            .header { text-align: center; margin-bottom: 30px; }
+                            .receipt-details { margin: 20px 0; }
+                            .receipt-details div { margin: 10px 0; }
+                            .amount { font-size: 24px; font-weight: bold; color: #2563eb; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="header">
+                            <h1>SN Group Foundation</h1>
+                            <h2>Donation Receipt</h2>
+                            <p>Receipt No: ${receiptNo}</p>
+                        </div>
+                        <div class="receipt-details">
+                            <div><strong>Donor Name:</strong> ${donation.donor}</div>
+                            <div><strong>Email:</strong> ${donation.email}</div>
+                            <div><strong>Amount:</strong> <span class="amount">₹${donation.amount.toLocaleString()}</span></div>
+                            <div><strong>Program:</strong> ${donation.program}</div>
+                            <div><strong>Payment Mode:</strong> ${donation.paymentMode}</div>
+                            <div><strong>Transaction ID:</strong> ${donation.transactionId}</div>
+                            <div><strong>Date:</strong> ${donation.date}</div>
+                            <div><strong>80G Eligible:</strong> ${donation.has80G ? 'Yes' : 'No'}</div>
+                        </div>
+                        <div style="margin-top: 50px; text-align: center;">
+                            <p>Thank you for your generous donation!</p>
+                            <p>www.sngroupfoundation.org</p>
+                        </div>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+                printWindow.print();
+            }
+        }
+
+        function viewDonorDetails(donorName, email) {
+            const donorData = donations.find(d => d.donor === donorName && d.email === email);
+            const donorHistory = donations.filter(d => d.email === email);
+            
+            const content = `
+                <div class="space-y-4">
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-900 mb-2">Personal Information</h4>
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            <div><span class="font-medium">Name:</span> ${donorName}</div>
+                            <div><span class="font-medium">Email:</span> ${email}</div>
+                            <div><span class="font-medium">Phone:</span> +91 98765 43210</div>
+                            <div><span class="font-medium">PAN:</span> ABCDE1234F</div>
+                        </div>
+                    </div>
+                    <div class="bg-blue-50 rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-900 mb-2">Donation Summary</h4>
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            <div><span class="font-medium">Total Donations:</span> ${donorHistory.length}</div>
+                            <div><span class="font-medium">Total Amount:</span> ₹${donorHistory.reduce((sum, d) => sum + d.amount, 0).toLocaleString()}</div>
+                            <div><span class="font-medium">First Donation:</span> ${donorHistory[donorHistory.length - 1]?.date}</div>
+                            <div><span class="font-medium">Last Donation:</span> ${donorHistory[0]?.date}</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-900 mb-2">Recent Donations</h4>
+                        <div class="max-h-32 overflow-y-auto">
+                            ${donorHistory.slice(0, 3).map(d => `
+                                <div class="flex justify-between items-center py-2 border-b border-gray-200 text-sm">
+                                    <span>${d.receiptNo}</span>
+                                    <span>₹${d.amount.toLocaleString()}</span>
+                                    <span class="text-gray-500">${d.date}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('donorDetailsContent').innerHTML = content;
+            document.getElementById('donorModal').classList.remove('hidden');
+            document.getElementById('donorModal').classList.add('flex');
+        }
+
+        function closeDonorModal() {
+            document.getElementById('donorModal').classList.add('hidden');
+            document.getElementById('donorModal').classList.remove('flex');
+        }
+
+        let currentReceiptForEdit = null;
+
+        function edit80G(receiptNo, current80G) {
+            currentReceiptForEdit = receiptNo;
+            document.getElementById('80GStatus').value = current80G.toString();
+            document.getElementById('edit80GModal').classList.remove('hidden');
+            document.getElementById('edit80GModal').classList.add('flex');
+        }
+
+        function close80GModal() {
+            document.getElementById('edit80GModal').classList.add('hidden');
+            document.getElementById('edit80GModal').classList.remove('flex');
+            currentReceiptForEdit = null;
+        }
+
+        function save80GStatus() {
+            const newStatus = document.getElementById('80GStatus').value === 'true';
+            const panNumber = document.getElementById('panNumber').value;
+            
+            // Update the donation record
+            const donationIndex = donations.findIndex(d => d.receiptNo === currentReceiptForEdit);
+            if (donationIndex !== -1) {
+                donations[donationIndex].has80G = newStatus;
+                if (panNumber) {
+                    donations[donationIndex].panNumber = panNumber;
+                }
+            }
+            
+            // Refresh the table
+            populateTable();
+            close80GModal();
+            alert(`80G status updated successfully for ${currentReceiptForEdit}`);
+        }
+
+        function send80GReceipt(receiptNo, email) {
+            alert(`80G receipt sent successfully to ${email} for ${receiptNo}`);
+        }
+
+        let receiptToDelete = null;
+
+        function deleteDonation(receiptNo) {
+            receiptToDelete = receiptNo;
+            document.getElementById('deleteModal').classList.remove('hidden');
+            document.getElementById('deleteModal').classList.add('flex');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+            document.getElementById('deleteModal').classList.remove('flex');
+            receiptToDelete = null;
+        }
+
+        function confirmDelete() {
+            const donationIndex = donations.findIndex(d => d.receiptNo === receiptToDelete);
+            if (donationIndex !== -1) {
+                donations.splice(donationIndex, 1);
+                populateTable();
+                alert(`Donation ${receiptToDelete} deleted successfully`);
+            }
+            closeDeleteModal();
+        }
+
+        function resendEmail(email) {
+            alert(`Email resent successfully to ${email}`);
+        }
+
+        // Auto-pay functions
+        function showAutoPayTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.auto-pay-tab').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Reset button styles
+            document.querySelectorAll('#activeTab, #setupTab, #closedTab').forEach(btn => {
+                btn.classList.remove('bg-purple-600', 'hover:bg-purple-700');
+                btn.classList.add('bg-gray-600', 'hover:bg-gray-700');
+            });
+            
+            // Show selected tab and highlight button
+            if (tabName === 'active') {
+                document.getElementById('activeAutoPayTab').classList.remove('hidden');
+                document.getElementById('activeTab').classList.remove('bg-gray-600', 'hover:bg-gray-700');
+                document.getElementById('activeTab').classList.add('bg-green-600', 'hover:bg-green-700');
+                populateActiveAutoPayTable();
+            } else if (tabName === 'setup') {
+                document.getElementById('setupAutoPayTab').classList.remove('hidden');
+                document.getElementById('setupTab').classList.remove('bg-gray-600', 'hover:bg-gray-700');
+                document.getElementById('setupTab').classList.add('bg-blue-600', 'hover:bg-blue-700');
+            } else if (tabName === 'closed') {
+                document.getElementById('closedAutoPayTab').classList.remove('hidden');
+                document.getElementById('closedTab').classList.remove('bg-gray-600', 'hover:bg-gray-700');
+                document.getElementById('closedTab').classList.add('bg-gray-600', 'hover:bg-gray-700');
+                populateClosedAutoPayTable();
+            }
+        }
+
+        function populateActiveAutoPayTable() {
+            const tableBody = document.getElementById('activeAutoPayTable');
+            tableBody.innerHTML = '';
+
+            filteredAutoPay.forEach(autoPay => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                
+                row.innerHTML = `
+                    <td class="px-4 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${autoPay.donor}</div>
+                        <div class="text-sm text-gray-500">${autoPay.email}</div>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">₹${autoPay.amount.toLocaleString()}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">${autoPay.frequency}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">${autoPay.nextPayment}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">${autoPay.program}</td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                        <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">${autoPay.status}</span>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm">
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="pauseAutoPay('${autoPay.id}')" class="text-orange-600 hover:text-orange-900 text-xs">Pause</button>
+                            <button onclick="editAutoPay('${autoPay.id}')" class="text-blue-600 hover:text-blue-900 text-xs">Edit</button>
+                            <button onclick="printAutoPayReceipt('${autoPay.id}')" class="text-green-600 hover:text-green-900 text-xs">Print</button>
+                            <button onclick="sendAutoPayMail('${autoPay.id}', '${autoPay.email}')" class="text-cyan-600 hover:text-cyan-900 text-xs">Send Mail</button>
+                            <button onclick="send80GAutoPayReceipt('${autoPay.id}', '${autoPay.email}')" class="text-indigo-600 hover:text-indigo-900 text-xs">80G Receipt</button>
+                            <button onclick="closeAutoPay('${autoPay.id}')" class="text-red-600 hover:text-red-900 text-xs">Close</button>
+                            <button onclick="viewAutoPayHistory('${autoPay.id}')" class="text-purple-600 hover:text-purple-900 text-xs">History</button>
+                        </div>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        function populateClosedAutoPayTable() {
+            const tableBody = document.getElementById('closedAutoPayTable');
+            tableBody.innerHTML = '';
+
+            closedAutoPay.forEach(autoPay => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                
+                row.innerHTML = `
+                    <td class="px-4 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${autoPay.donor}</div>
+                        <div class="text-sm text-gray-500">${autoPay.email}</div>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">₹${autoPay.amount.toLocaleString()}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">${autoPay.duration}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-green-600">₹${autoPay.totalCollected.toLocaleString()}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">${autoPay.closedDate}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600">${autoPay.reason}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm">
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="reactivateAutoPay('${autoPay.id}')" class="text-green-600 hover:text-green-900 text-xs">Reactivate</button>
+                            <button onclick="viewAutoPayHistory('${autoPay.id}')" class="text-purple-600 hover:text-purple-900 text-xs">History</button>
+                        </div>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        function setupAutoPay() {
+            alert('Auto-Pay subscription setup successfully! Donor will receive confirmation email.');
+        }
+
+        function pauseAutoPay(id) {
+            alert(`Auto-Pay ${id} paused successfully. Donor will be notified.`);
+        }
+
+        function editAutoPay(id) {
+            const autoPay = activeAutoPay.find(ap => ap.id === id);
+            if (autoPay) {
+                currentEditingAutoPayId = id;
+                document.getElementById('editDonorName').value = autoPay.donor;
+                document.getElementById('editDonorEmail').value = autoPay.email;
+                document.getElementById('editAmount').value = autoPay.amount;
+                document.getElementById('editFrequency').value = autoPay.frequency;
+                document.getElementById('editProgram').value = autoPay.program;
+                
+                document.getElementById('editAutoPayModal').classList.remove('hidden');
+                document.getElementById('editAutoPayModal').classList.add('flex');
+            }
+        }
+
+        function closeEditAutoPayModal() {
+            document.getElementById('editAutoPayModal').classList.add('hidden');
+            document.getElementById('editAutoPayModal').classList.remove('flex');
+            currentEditingAutoPayId = null;
+        }
+
+        function saveAutoPayChanges() {
+            if (currentEditingAutoPayId) {
+                const autoPayIndex = activeAutoPay.findIndex(ap => ap.id === currentEditingAutoPayId);
+                if (autoPayIndex !== -1) {
+                    activeAutoPay[autoPayIndex].donor = document.getElementById('editDonorName').value;
+                    activeAutoPay[autoPayIndex].email = document.getElementById('editDonorEmail').value;
+                    activeAutoPay[autoPayIndex].amount = parseInt(document.getElementById('editAmount').value);
+                    activeAutoPay[autoPayIndex].frequency = document.getElementById('editFrequency').value;
+                    activeAutoPay[autoPayIndex].program = document.getElementById('editProgram').value;
+                    
+                    filteredAutoPay = [...activeAutoPay];
+                    populateActiveAutoPayTable();
+                    closeEditAutoPayModal();
+                    alert('Auto-Pay subscription updated successfully!');
+                }
+            }
+        }
+
+        function printAutoPayReceipt(id) {
+            const autoPay = activeAutoPay.find(ap => ap.id === id);
+            if (autoPay) {
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <html>
+                    <head>
+                        <title>Auto-Pay Receipt - ${id}</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; padding: 20px; }
+                            .header { text-align: center; margin-bottom: 30px; }
+                            .receipt-details { margin: 20px 0; }
+                            .receipt-details div { margin: 10px 0; }
+                            .amount { font-size: 24px; font-weight: bold; color: #2563eb; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="header">
+                            <h1>SN Group Foundation</h1>
+                            <h2>Auto-Pay Subscription Receipt</h2>
+                            <p>Subscription ID: ${id}</p>
+                        </div>
+                        <div class="receipt-details">
+                            <div><strong>Donor Name:</strong> ${autoPay.donor}</div>
+                            <div><strong>Email:</strong> ${autoPay.email}</div>
+                            <div><strong>Amount:</strong> <span class="amount">₹${autoPay.amount.toLocaleString()}</span></div>
+                            <div><strong>Frequency:</strong> ${autoPay.frequency}</div>
+                            <div><strong>Program:</strong> ${autoPay.program}</div>
+                            <div><strong>Next Payment:</strong> ${autoPay.nextPayment}</div>
+                            <div><strong>Status:</strong> ${autoPay.status}</div>
+                        </div>
+                        <div style="margin-top: 50px; text-align: center;">
+                            <p>Thank you for your recurring donation commitment!</p>
+                            <p>www.sngroupfoundation.org</p>
+                        </div>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+                printWindow.print();
+            }
+        }
+
+        function sendAutoPayMail(id, email) {
+            const autoPay = activeAutoPay.find(ap => ap.id === id);
+            if (autoPay) {
+                alert(`Auto-Pay confirmation email sent successfully to ${email} for subscription ${id}. 
+                
+Details sent:
+- Next payment: ${autoPay.nextPayment}
+- Amount: ₹${autoPay.amount.toLocaleString()}
+- Program: ${autoPay.program}`);
+            }
+        }
+
+        function send80GAutoPayReceipt(id, email) {
+            const autoPay = activeAutoPay.find(ap => ap.id === id);
+            if (autoPay) {
+                alert(`80G tax exemption receipt sent successfully to ${email} for Auto-Pay subscription ${id}.
+                
+This includes:
+- Annual donation summary
+- 80G certificate
+- Tax exemption details`);
+            }
+        }
+
+        function closeAutoPay(id) {
+            if (confirm('Are you sure you want to close this Auto-Pay subscription?')) {
+                alert(`Auto-Pay ${id} closed successfully. Donor will receive final receipt.`);
+            }
+        }
+
+        function reactivateAutoPay(id) {
+            if (confirm('Are you sure you want to reactivate this Auto-Pay subscription?')) {
+                alert(`Auto-Pay ${id} reactivated successfully. Next payment will be scheduled.`);
+            }
+        }
+
+        let currentHistoryId = null;
+
+        function viewAutoPayHistory(id) {
+            const autoPay = activeAutoPay.find(ap => ap.id === id) || closedAutoPay.find(ap => ap.id === id);
+            if (autoPay) {
+                currentHistoryId = id;
+                
+                // Update donor info
+                document.getElementById('historyDonorInfo').textContent = 
+                    `${autoPay.donor} - ${autoPay.program} (${autoPay.frequency})`;
+                
+                // Calculate totals
+                const history = autoPay.paymentHistory || [];
+                const totalPayments = history.length;
+                const totalAmount = history.reduce((sum, payment) => sum + payment.amount, 0);
+                const successfulPayments = history.filter(p => p.status === 'Success').length;
+                const successRate = totalPayments > 0 ? Math.round((successfulPayments / totalPayments) * 100) : 100;
+                
+                // Update summary cards
+                document.getElementById('totalPayments').textContent = totalPayments;
+                document.getElementById('totalAmount').textContent = `₹${totalAmount.toLocaleString()}`;
+                document.getElementById('successRate').textContent = `${successRate}%`;
+                document.getElementById('activeSince').textContent = new Date(autoPay.startDate).toLocaleDateString('en-IN');
+                
+                // Populate payment history table
+                const tableBody = document.getElementById('paymentHistoryTable');
+                tableBody.innerHTML = '';
+                
+                history.forEach((payment, index) => {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-50 transition-colors';
+                    
+                    const statusClass = payment.status === 'Success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+                    
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">${new Date(payment.date).toLocaleDateString('en-IN')}</div>
+                            <div class="text-xs text-gray-500">${new Date(payment.date).toLocaleDateString('en-IN', { weekday: 'long' })}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-lg font-bold text-gray-900">₹${payment.amount.toLocaleString()}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-mono text-gray-700">${payment.txnId}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-3 py-1 text-xs font-medium rounded-full ${statusClass}">${payment.status}</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <button onclick="printAutoPayReceipt('${id}')" class="text-blue-600 hover:text-blue-900 text-sm font-medium">
+                                📄 Receipt
+                            </button>
+                        </td>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                });
+                
+                // Generate upcoming payments
+                const upcomingContainer = document.getElementById('upcomingPayments');
+                upcomingContainer.innerHTML = '';
+                
+                if (autoPay.status === 'Active') {
+                    const nextPayments = generateUpcomingPayments(autoPay);
+                    nextPayments.forEach((payment, index) => {
+                        const paymentCard = document.createElement('div');
+                        paymentCard.className = 'bg-white rounded-lg p-4 border border-indigo-300 shadow-sm';
+                        paymentCard.innerHTML = `
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-indigo-800">Payment ${index + 1}</span>
+                                <span class="text-xs text-indigo-600">${payment.frequency}</span>
+                            </div>
+                            <div class="text-lg font-bold text-indigo-900">₹${payment.amount.toLocaleString()}</div>
+                            <div class="text-sm text-indigo-700">${payment.date}</div>
+                        `;
+                        upcomingContainer.appendChild(paymentCard);
+                    });
+                } else {
+                    upcomingContainer.innerHTML = '<div class="col-span-3 text-center text-gray-500 py-4">No upcoming payments - Subscription closed</div>';
+                }
+                
+                // Show modal
+                document.getElementById('paymentHistoryModal').classList.remove('hidden');
+                document.getElementById('paymentHistoryModal').classList.add('flex');
+            }
+        }
+
+        function generateUpcomingPayments(autoPay) {
+            const payments = [];
+            const nextDate = new Date(autoPay.nextPayment);
+            
+            for (let i = 0; i < 3; i++) {
+                const paymentDate = new Date(nextDate);
+                
+                if (autoPay.frequency === 'Monthly') {
+                    paymentDate.setMonth(paymentDate.getMonth() + i);
+                } else if (autoPay.frequency === 'Quarterly') {
+                    paymentDate.setMonth(paymentDate.getMonth() + (i * 3));
+                } else if (autoPay.frequency === 'Half-Yearly') {
+                    paymentDate.setMonth(paymentDate.getMonth() + (i * 6));
+                } else if (autoPay.frequency === 'Yearly') {
+                    paymentDate.setFullYear(paymentDate.getFullYear() + i);
+                }
+                
+                payments.push({
+                    date: paymentDate.toLocaleDateString('en-IN'),
+                    amount: autoPay.amount,
+                    frequency: autoPay.frequency
+                });
+            }
+            
+            return payments;
+        }
+
+        function closePaymentHistoryModal() {
+            document.getElementById('paymentHistoryModal').classList.add('hidden');
+            document.getElementById('paymentHistoryModal').classList.remove('flex');
+            currentHistoryId = null;
+        }
+
+        function printPaymentHistory() {
+            if (!currentHistoryId) return;
+            
+            const autoPay = activeAutoPay.find(ap => ap.id === currentHistoryId) || closedAutoPay.find(ap => ap.id === currentHistoryId);
+            if (!autoPay) return;
+            
+            const history = autoPay.paymentHistory || [];
+            const totalAmount = history.reduce((sum, payment) => sum + payment.amount, 0);
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Payment History - ${autoPay.donor}</title>
+                    <style>
+                        body { 
+                            font-family: 'Arial', sans-serif; 
+                            padding: 30px; 
+                            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+                            margin: 0;
+                        }
+                        .container {
+                            background: white;
+                            padding: 40px;
+                            border-radius: 15px;
+                            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                            max-width: 800px;
+                            margin: 0 auto;
+                        }
+                        .header { 
+                            text-align: center; 
+                            margin-bottom: 40px; 
+                            border-bottom: 3px solid #667eea;
+                            padding-bottom: 20px;
+                        }
+                        .header h1 {
+                            color: #667eea;
+                            margin: 0;
+                            font-size: 28px;
+                            font-weight: bold;
+                        }
+                        .header h2 {
+                            color: #4a5568;
+                            margin: 10px 0 0 0;
+                            font-size: 18px;
+                            font-weight: normal;
+                        }
+                        .donor-info {
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            color: white;
+                            padding: 20px;
+                            border-radius: 10px;
+                            margin-bottom: 30px;
+                        }
+                        .donor-info h3 {
+                            margin: 0 0 10px 0;
+                            font-size: 20px;
+                        }
+                        .summary-grid {
+                            display: grid;
+                            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                            gap: 20px;
+                            margin-bottom: 30px;
+                        }
+                        .summary-card {
+                            background: #f8fafc;
+                            padding: 20px;
+                            border-radius: 10px;
+                            border-left: 4px solid #667eea;
+                            text-align: center;
+                        }
+                        .summary-card h4 {
+                            margin: 0 0 10px 0;
+                            color: #4a5568;
+                            font-size: 14px;
+                            text-transform: uppercase;
+                            letter-spacing: 1px;
+                        }
+                        .summary-card .value {
+                            font-size: 24px;
+                            font-weight: bold;
+                            color: #2d3748;
+                        }
+                        table { 
+                            width: 100%; 
+                            border-collapse: collapse; 
+                            margin-top: 20px;
+                            background: white;
+                            border-radius: 10px;
+                            overflow: hidden;
+                            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                        }
+                        th { 
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            color: white;
+                            padding: 15px;
+                            text-align: left;
+                            font-weight: bold;
+                            text-transform: uppercase;
+                            font-size: 12px;
+                            letter-spacing: 1px;
+                        }
+                        td { 
+                            padding: 15px; 
+                            border-bottom: 1px solid #e2e8f0;
+                        }
+                        tr:nth-child(even) {
+                            background: #f8fafc;
+                        }
+                        tr:hover {
+                            background: #edf2f7;
+                        }
+                        .amount {
+                            font-weight: bold;
+                            color: #38a169;
+                            font-size: 16px;
+                        }
+                        .status-success {
+                            background: #c6f6d5;
+                            color: #22543d;
+                            padding: 4px 12px;
+                            border-radius: 20px;
+                            font-size: 12px;
+                            font-weight: bold;
+                        }
+                        .footer {
+                            text-align: center;
+                            margin-top: 40px;
+                            padding-top: 20px;
+                            border-top: 2px solid #e2e8f0;
+                            color: #718096;
+                        }
+                        .print-date {
+                            text-align: right;
+                            color: #a0aec0;
+                            font-size: 12px;
+                            margin-bottom: 20px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="print-date">Generated on: ${new Date().toLocaleDateString('en-IN')} at ${new Date().toLocaleTimeString('en-IN')}</div>
+                        
+                        <div class="header">
+                            <h1>🏛️ SN Group Foundation</h1>
+                            <h2>Auto-Pay Subscription Payment History</h2>
+                        </div>
+                        
+                        <div class="donor-info">
+                            <h3>📋 Subscription Details</h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                                <div><strong>Donor:</strong> ${autoPay.donor}</div>
+                                <div><strong>Email:</strong> ${autoPay.email}</div>
+                                <div><strong>Program:</strong> ${autoPay.program}</div>
+                                <div><strong>Frequency:</strong> ${autoPay.frequency}</div>
+                                <div><strong>Subscription ID:</strong> ${autoPay.id}</div>
+                                <div><strong>Active Since:</strong> ${new Date(autoPay.startDate).toLocaleDateString('en-IN')}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="summary-grid">
+                            <div class="summary-card">
+                                <h4>Total Payments</h4>
+                                <div class="value">${history.length}</div>
+                            </div>
+                            <div class="summary-card">
+                                <h4>Total Amount</h4>
+                                <div class="value">₹${totalAmount.toLocaleString()}</div>
+                            </div>
+                            <div class="summary-card">
+                                <h4>Success Rate</h4>
+                                <div class="value">${history.length > 0 ? Math.round((history.filter(p => p.status === 'Success').length / history.length) * 100) : 100}%</div>
+                            </div>
+                            <div class="summary-card">
+                                <h4>Monthly Amount</h4>
+                                <div class="value">₹${autoPay.amount.toLocaleString()}</div>
+                            </div>
+                        </div>
+                        
+                        <h3 style="color: #4a5568; margin-bottom: 15px;">💳 Payment Timeline</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>📅 Payment Date</th>
+                                    <th>💰 Amount</th>
+                                    <th>🔢 Transaction ID</th>
+                                    <th>✅ Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${history.map(payment => `
+                                    <tr>
+                                        <td>${new Date(payment.date).toLocaleDateString('en-IN', { 
+                                            weekday: 'long', 
+                                            year: 'numeric', 
+                                            month: 'long', 
+                                            day: 'numeric' 
+                                        })}</td>
+                                        <td class="amount">₹${payment.amount.toLocaleString()}</td>
+                                        <td style="font-family: monospace; font-size: 14px;">${payment.txnId}</td>
+                                        <td><span class="status-success">${payment.status}</span></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                        
+                        <div class="footer">
+                            <p><strong>🌟 Thank you for your continued support!</strong></p>
+                            <p>📧 Contact us: info@sngroupfoundation.org | 🌐 www.sngroupfoundation.org</p>
+                            <p style="margin-top: 15px; font-size: 11px;">This is a computer-generated document. No signature required.</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            populateTable();
+            showAutoPayTab('active'); // Show active auto-pay by default
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('receiptModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeReceiptModal();
+            }
+        });
+
+        document.getElementById('donorModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDonorModal();
+            }
+        });
+
+        document.getElementById('edit80GModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                close80GModal();
+            }
+        });
+
+        document.getElementById('deleteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDeleteModal();
+            }
+        });
+
+        document.getElementById('editAutoPayModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEditAutoPayModal();
+            }
+        });
+
+        document.getElementById('paymentHistoryModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePaymentHistoryModal();
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'988e6f49f7941daf',t:'MTc1OTUxNTQyOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
