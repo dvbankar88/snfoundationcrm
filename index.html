@@ -154,7 +154,7 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200" id="donations-table">
-                            <tr class="hover:bg-gray-50">
+                            <tr class="hover:bg-gray-50" data-receipt="SN/2024/001">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">SN/2024/001</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">Rajesh Kumar</div>
@@ -173,9 +173,11 @@
                                     <button class="text-purple-600 hover:text-purple-900 edit-donation" data-receipt="SN/2024/001">Edit</button>
                                     <button class="text-green-600 hover:text-green-900 email-donation" data-receipt="SN/2024/001">Email</button>
                                     <button class="text-orange-600 hover:text-orange-900 download-donation" data-receipt="SN/2024/001">Download</button>
+                                    <button class="text-indigo-600 hover:text-indigo-900 print-donation" data-receipt="SN/2024/001">Print</button>
+                                    <button class="text-red-600 hover:text-red-900 delete-donation" data-receipt="SN/2024/001">Delete</button>
                                 </td>
                             </tr>
-                            <tr class="hover:bg-gray-50">
+                            <tr class="hover:bg-gray-50" data-receipt="SN/2024/002">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">SN/2024/002</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">Priya Sharma</div>
@@ -194,6 +196,8 @@
                                     <button class="text-purple-600 hover:text-purple-900 edit-donation" data-receipt="SN/2024/002">Edit</button>
                                     <button class="text-green-600 hover:text-green-900 email-donation" data-receipt="SN/2024/002">Email</button>
                                     <button class="text-orange-600 hover:text-orange-900 download-donation" data-receipt="SN/2024/002">Download</button>
+                                    <button class="text-indigo-600 hover:text-indigo-900 print-donation" data-receipt="SN/2024/002">Print</button>
+                                    <button class="text-red-600 hover:text-red-900 delete-donation" data-receipt="SN/2024/002">Delete</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -355,8 +359,18 @@
                 <button id="email-receipt" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
                     Email Receipt
                 </button>
-                <button id="download-receipt" class="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
-                    Download PDF
+                <div class="flex-1 relative">
+                    <button id="download-receipt" class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center space-x-1">
+                        <span>Download</span>
+                        <span class="text-xs">▼</span>
+                    </button>
+                    <div id="success-download-options" class="absolute left-0 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-10 hidden">
+                        <button class="w-full text-left px-4 py-2 hover:bg-gray-50 success-download-simple" data-format="simple">Simple Receipt</button>
+                        <button class="w-full text-left px-4 py-2 hover:bg-gray-50 success-download-professional" data-format="professional">Professional Receipt</button>
+                    </div>
+                </div>
+                <button id="print-receipt" class="flex-1 bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors">
+                    Print Receipt
                 </button>
             </div>
             <button id="close-success" class="mt-3 text-gray-500 hover:text-gray-700">Close</button>
@@ -380,11 +394,24 @@
                     <button id="edit-from-view" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
                         Edit Donation
                     </button>
-                    <button id="download-from-view" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                        Download Receipt
+                    <div class="relative">
+                        <button id="download-from-view" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-1">
+                            <span>Download</span>
+                            <span class="text-xs">▼</span>
+                        </button>
+                        <div id="download-options" class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10 hidden">
+                            <button class="w-full text-left px-4 py-2 hover:bg-gray-50 download-simple" data-format="simple">Simple Receipt</button>
+                            <button class="w-full text-left px-4 py-2 hover:bg-gray-50 download-professional" data-format="professional">Professional Receipt</button>
+                        </div>
+                    </div>
+                    <button id="print-from-view" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                        Print Receipt
                     </button>
                     <button id="email-from-view" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                         Email Receipt
+                    </button>
+                    <button id="delete-from-view" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                        Delete
                     </button>
                 </div>
             </div>
@@ -416,6 +443,53 @@
         </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-red-600 text-2xl">⚠️</span>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Delete Donation Record</h3>
+                <p class="text-gray-600 mb-4">Are you sure you want to delete this donation record? This action cannot be undone.</p>
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+                    <p class="text-sm text-yellow-800">Receipt: <span id="delete-receipt-number" class="font-medium"></span></p>
+                    <p class="text-sm text-yellow-800">Donor: <span id="delete-donor-name" class="font-medium"></span></p>
+                    <p class="text-sm text-yellow-800">Amount: <span id="delete-amount" class="font-medium"></span></p>
+                </div>
+                <div class="flex space-x-3">
+                    <button id="cancel-delete" class="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors">
+                        Cancel
+                    </button>
+                    <button id="confirm-delete" class="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">
+                        Delete Record
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Print Receipt Modal -->
+    <div id="print-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800">Print Receipt</h3>
+                <div class="flex space-x-2">
+                    <button id="print-professional-btn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        Professional Format
+                    </button>
+                    <button id="print-simple-btn" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                        Simple Format
+                    </button>
+                    <button id="close-print-modal" class="text-gray-400 hover:text-gray-600 text-2xl">×</button>
+                </div>
+            </div>
+            <div id="print-content" class="p-6">
+                <!-- Print content will be populated here -->
+            </div>
+        </div>
+    </div>
+
     <script>
         // Global variables
         let donorsDatabase = [
@@ -435,6 +509,8 @@
         const successModal = document.getElementById('success-modal');
         const viewModal = document.getElementById('view-modal');
         const editModal = document.getElementById('edit-modal');
+        const deleteModal = document.getElementById('delete-modal');
+        const printModal = document.getElementById('print-modal');
         
         const addDonationBtn = document.getElementById('add-donation-btn');
         const closeModal = document.getElementById('close-modal');
@@ -443,6 +519,8 @@
         const closeViewModal = document.getElementById('close-view-modal');
         const closeEditModal = document.getElementById('close-edit-modal');
         const cancelEdit = document.getElementById('cancel-edit');
+        const closePrintModal = document.getElementById('close-print-modal');
+        const cancelDelete = document.getElementById('cancel-delete');
 
         // Update dashboard totals
         function updateDashboard() {
@@ -490,6 +568,14 @@
             btn.addEventListener('click', () => {
                 viewModal.classList.add('hidden');
                 editModal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            });
+        });
+
+        [closePrintModal, cancelDelete].forEach(btn => {
+            btn.addEventListener('click', () => {
+                printModal.classList.add('hidden');
+                deleteModal.classList.add('hidden');
                 document.body.style.overflow = 'auto';
             });
         });
@@ -730,16 +816,20 @@
                     <button class="text-purple-600 hover:text-purple-900 edit-donation" data-receipt="${donation.receiptNumber}">Edit</button>
                     <button class="text-green-600 hover:text-green-900 email-donation" data-receipt="${donation.receiptNumber}">Email</button>
                     <button class="text-orange-600 hover:text-orange-900 download-donation" data-receipt="${donation.receiptNumber}">Download</button>
+                    <button class="text-indigo-600 hover:text-indigo-900 print-donation" data-receipt="${donation.receiptNumber}">Print</button>
+                    <button class="text-red-600 hover:text-red-900 delete-donation" data-receipt="${donation.receiptNumber}">Delete</button>
                 </td>
             `;
             
             tableBody.insertBefore(row, tableBody.firstChild);
         }
 
-        // View donation functionality
+        // Action button event listeners - FIXED
         document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('view-donation')) {
-                const receiptNumber = e.target.dataset.receipt;
+            const target = e.target;
+            
+            if (target.classList.contains('view-donation')) {
+                const receiptNumber = target.dataset.receipt;
                 const donation = donationsDatabase.find(d => d.receiptNumber === receiptNumber);
                 const donor = donorsDatabase.find(d => d.id === donation.donorId);
                 
@@ -748,8 +838,8 @@
                 }
             }
             
-            if (e.target.classList.contains('edit-donation')) {
-                const receiptNumber = e.target.dataset.receipt;
+            if (target.classList.contains('edit-donation')) {
+                const receiptNumber = target.dataset.receipt;
                 const donation = donationsDatabase.find(d => d.receiptNumber === receiptNumber);
                 const donor = donorsDatabase.find(d => d.id === donation.donorId);
                 
@@ -758,14 +848,24 @@
                 }
             }
             
-            if (e.target.classList.contains('email-donation')) {
-                const receiptNumber = e.target.dataset.receipt;
+            if (target.classList.contains('email-donation')) {
+                const receiptNumber = target.dataset.receipt;
                 alert(`Receipt ${receiptNumber} emailed successfully!`);
             }
             
-            if (e.target.classList.contains('download-donation')) {
-                const receiptNumber = e.target.dataset.receipt;
-                downloadReceipt(receiptNumber);
+            if (target.classList.contains('download-donation')) {
+                const receiptNumber = target.dataset.receipt;
+                showDownloadOptions(target, receiptNumber);
+            }
+            
+            if (target.classList.contains('print-donation')) {
+                const receiptNumber = target.dataset.receipt;
+                showPrintModal(receiptNumber);
+            }
+            
+            if (target.classList.contains('delete-donation')) {
+                const receiptNumber = target.dataset.receipt;
+                showDeleteConfirmation(receiptNumber);
             }
         });
 
@@ -812,6 +912,8 @@
             document.getElementById('edit-from-view').dataset.receipt = donation.receiptNumber;
             document.getElementById('download-from-view').dataset.receipt = donation.receiptNumber;
             document.getElementById('email-from-view').dataset.receipt = donation.receiptNumber;
+            document.getElementById('print-from-view').dataset.receipt = donation.receiptNumber;
+            document.getElementById('delete-from-view').dataset.receipt = donation.receiptNumber;
             
             viewModal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
@@ -972,51 +1074,184 @@
                         <button class="text-purple-600 hover:text-purple-900 edit-donation" data-receipt="${donation.receiptNumber}">Edit</button>
                         <button class="text-green-600 hover:text-green-900 email-donation" data-receipt="${donation.receiptNumber}">Email</button>
                         <button class="text-orange-600 hover:text-orange-900 download-donation" data-receipt="${donation.receiptNumber}">Download</button>
+                        <button class="text-indigo-600 hover:text-indigo-900 print-donation" data-receipt="${donation.receiptNumber}">Print</button>
+                        <button class="text-red-600 hover:text-red-900 delete-donation" data-receipt="${donation.receiptNumber}">Delete</button>
                     </td>
                 `;
             }
         }
 
-        function downloadReceipt(receiptNumber) {
+        function downloadReceipt(receiptNumber, format = 'simple') {
             const donation = donationsDatabase.find(d => d.receiptNumber === receiptNumber);
             const donor = donorsDatabase.find(d => d.id === donation.donorId);
             
             if (donation && donor) {
-                // Create a simple receipt content
-                const receiptContent = `
-                    SN GROUP FOUNDATION
-                    Donation Receipt
-                    
-                    Receipt No: ${donation.receiptNumber}
-                    Date: ${new Date(donation.date).toLocaleDateString('en-IN')}
-                    
-                    Donor Details:
-                    Name: ${donor.name}
-                    Mobile: ${donor.mobile}
-                    Email: ${donor.email || 'N/A'}
-                    PAN: ${donor.pan || 'N/A'}
-                    
-                    Donation Details:
-                    Amount: ₹${donation.amount.toLocaleString('en-IN')}
-                    Purpose: ${donation.purpose}
-                    Payment Mode: ${donation.paymentMode.toUpperCase()}
-                    Reference: ${donation.reference || 'N/A'}
-                    80G Certificate: ${donation.eightyG === 'yes' ? 'Yes' : 'No'}
-                    
-                    Thank you for your generous donation!
-                `;
+                let receiptContent;
+                
+                if (format === 'professional') {
+                    receiptContent = generateProfessionalReceipt(donation, donor);
+                } else {
+                    receiptContent = generateSimpleReceipt(donation, donor);
+                }
                 
                 // Create and download file
-                const blob = new Blob([receiptContent], { type: 'text/plain' });
+                const blob = new Blob([receiptContent], { type: format === 'professional' ? 'text/html' : 'text/plain' });
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `Receipt_${receiptNumber}.txt`;
+                a.download = `Receipt_${receiptNumber}_${format}.${format === 'professional' ? 'html' : 'txt'}`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 window.URL.revokeObjectURL(url);
             }
+        }
+
+        function generateSimpleReceipt(donation, donor) {
+            return `
+SN GROUP FOUNDATION
+Donation Receipt
+
+Receipt No: ${donation.receiptNumber}
+Date: ${new Date(donation.date).toLocaleDateString('en-IN')}
+
+Donor Details:
+Name: ${donor.name}
+Mobile: ${donor.mobile}
+Email: ${donor.email || 'N/A'}
+PAN: ${donor.pan || 'N/A'}
+
+Donation Details:
+Amount: ₹${donation.amount.toLocaleString('en-IN')}
+Purpose: ${donation.purpose}
+Payment Mode: ${donation.paymentMode.toUpperCase()}
+Reference: ${donation.reference || 'N/A'}
+80G Certificate: ${donation.eightyG === 'yes' ? 'Yes' : 'No'}
+
+Thank you for your generous donation!
+            `;
+        }
+
+        function generateProfessionalReceipt(donation, donor) {
+            const formatDate = new Date(donation.date).toLocaleDateString('en-IN', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            });
+            
+            return `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Donation Receipt - ${donation.receiptNumber}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .receipt { max-width: 800px; margin: 0 auto; background: white; padding: 40px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        .header { text-align: center; border-bottom: 3px solid #2563eb; padding-bottom: 20px; margin-bottom: 30px; }
+        .logo { width: 80px; height: 80px; background: #2563eb; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold; }
+        .org-name { font-size: 28px; font-weight: bold; color: #1f2937; margin-bottom: 5px; }
+        .receipt-title { font-size: 20px; color: #6b7280; }
+        .receipt-info { background: #f3f4f6; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+        .receipt-number { font-size: 24px; font-weight: bold; color: #2563eb; text-align: center; }
+        .receipt-date { text-align: center; color: #6b7280; margin-top: 5px; }
+        .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px; }
+        .detail-section { background: #f9fafb; padding: 20px; border-radius: 8px; border-left: 4px solid #2563eb; }
+        .section-title { font-size: 18px; font-weight: bold; color: #1f2937; margin-bottom: 15px; }
+        .detail-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .detail-label { color: #6b7280; }
+        .detail-value { font-weight: 600; color: #1f2937; }
+        .amount-highlight { background: #dbeafe; padding: 15px; border-radius: 8px; text-align: center; margin: 20px 0; }
+        .amount-text { font-size: 24px; font-weight: bold; color: #2563eb; }
+        .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; }
+        .thank-you { font-size: 18px; color: #059669; font-weight: 600; margin-bottom: 10px; }
+        .contact-info { color: #6b7280; font-size: 14px; }
+        .eighty-g-badge { background: #7c3aed; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        @media print { body { background: white; } .receipt { box-shadow: none; } }
+    </style>
+</head>
+<body>
+    <div class="receipt">
+        <div class="header">
+            <div class="logo">SN</div>
+            <div class="org-name">SN GROUP FOUNDATION</div>
+            <div class="receipt-title">Official Donation Receipt</div>
+        </div>
+        
+        <div class="receipt-info">
+            <div class="receipt-number">Receipt No: ${donation.receiptNumber}</div>
+            <div class="receipt-date">Date of Issue: ${formatDate}</div>
+        </div>
+        
+        <div class="details-grid">
+            <div class="detail-section">
+                <div class="section-title">Donor Information</div>
+                <div class="detail-row">
+                    <span class="detail-label">Full Name:</span>
+                    <span class="detail-value">${donor.name}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Mobile Number:</span>
+                    <span class="detail-value">${donor.mobile}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email Address:</span>
+                    <span class="detail-value">${donor.email || 'Not Provided'}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">PAN Number:</span>
+                    <span class="detail-value">${donor.pan || 'Not Provided'}</span>
+                </div>
+                ${donor.address ? `<div class="detail-row">
+                    <span class="detail-label">Address:</span>
+                    <span class="detail-value">${donor.address}</span>
+                </div>` : ''}
+            </div>
+            
+            <div class="detail-section">
+                <div class="section-title">Donation Details</div>
+                <div class="detail-row">
+                    <span class="detail-label">Purpose:</span>
+                    <span class="detail-value">${donation.purpose.charAt(0).toUpperCase() + donation.purpose.slice(1)}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Payment Mode:</span>
+                    <span class="detail-value">${donation.paymentMode.toUpperCase()}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Transaction Ref:</span>
+                    <span class="detail-value">${donation.reference || 'N/A'}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Donation Date:</span>
+                    <span class="detail-value">${formatDate}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">80G Certificate:</span>
+                    <span class="detail-value">${donation.eightyG === 'yes' ? '<span class="eighty-g-badge">Eligible</span>' : 'Not Applicable'}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="amount-highlight">
+            <div class="amount-text">Total Donation Amount: ₹${donation.amount.toLocaleString('en-IN')}</div>
+        </div>
+        
+        ${donation.notes ? `<div class="detail-section">
+            <div class="section-title">Additional Notes</div>
+            <p style="margin: 0; color: #374151;">${donation.notes}</p>
+        </div>` : ''}
+        
+        <div class="footer">
+            <div class="thank-you">Thank you for your generous contribution!</div>
+            <div class="contact-info">
+                SN Group Foundation | Email: info@sngroupfoundation.org | Phone: +91 98765 43210<br>
+                This is a computer-generated receipt and does not require a signature.
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+            `;
         }
 
         // Action buttons from view modal
@@ -1030,11 +1265,174 @@
         });
 
         document.getElementById('download-from-view').addEventListener('click', function() {
-            downloadReceipt(this.dataset.receipt);
+            const options = document.getElementById('download-options');
+            options.classList.toggle('hidden');
         });
 
         document.getElementById('email-from-view').addEventListener('click', function() {
-            alert(`Receipt ${this.dataset.receipt} emailed successfully!`);
+            const receiptNumber = this.dataset.receipt;
+            alert(`Receipt ${receiptNumber} emailed successfully!`);
+        });
+
+        document.getElementById('print-from-view').addEventListener('click', function() {
+            const receiptNumber = this.dataset.receipt;
+            showPrintModal(receiptNumber);
+        });
+
+        document.getElementById('delete-from-view').addEventListener('click', function() {
+            const receiptNumber = this.dataset.receipt;
+            viewModal.classList.add('hidden');
+            showDeleteConfirmation(receiptNumber);
+        });
+
+        // Download options functionality
+        document.getElementById('download-receipt').addEventListener('click', function() {
+            const options = document.getElementById('success-download-options');
+            options.classList.toggle('hidden');
+        });
+
+        // Download format selection
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('download-simple') || e.target.classList.contains('download-professional')) {
+                const format = e.target.dataset.format;
+                const receiptNumber = document.getElementById('download-from-view').dataset.receipt;
+                downloadReceipt(receiptNumber, format);
+                document.getElementById('download-options').classList.add('hidden');
+            }
+            
+            if (e.target.classList.contains('success-download-simple') || e.target.classList.contains('success-download-professional')) {
+                const format = e.target.dataset.format;
+                const receiptNumber = document.getElementById('receipt-number').textContent;
+                downloadReceipt(receiptNumber, format);
+                document.getElementById('success-download-options').classList.add('hidden');
+                successModal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        function showDownloadOptions(button, receiptNumber) {
+            // Simple inline menu for download options
+            const existingMenu = document.querySelector('.download-menu');
+            if (existingMenu) existingMenu.remove();
+            
+            const menu = document.createElement('div');
+            menu.className = 'download-menu absolute bg-white border border-gray-200 rounded-lg shadow-lg z-20 mt-1';
+            menu.style.minWidth = '150px';
+            menu.innerHTML = `
+                <button class="w-full text-left px-4 py-2 hover:bg-gray-50 download-option" data-format="simple" data-receipt="${receiptNumber}">Simple Receipt</button>
+                <button class="w-full text-left px-4 py-2 hover:bg-gray-50 download-option" data-format="professional" data-receipt="${receiptNumber}">Professional Receipt</button>
+            `;
+            
+            button.parentElement.style.position = 'relative';
+            button.parentElement.appendChild(menu);
+            
+            // Close menu when clicking outside
+            setTimeout(() => {
+                document.addEventListener('click', function closeMenu(e) {
+                    if (!menu.contains(e.target) && e.target !== button) {
+                        menu.remove();
+                        document.removeEventListener('click', closeMenu);
+                    }
+                });
+            }, 100);
+        }
+
+        // Handle download option clicks
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('download-option')) {
+                const format = e.target.dataset.format;
+                const receiptNumber = e.target.dataset.receipt;
+                downloadReceipt(receiptNumber, format);
+                e.target.closest('.download-menu').remove();
+            }
+        });
+
+        function showPrintModal(receiptNumber) {
+            const donation = donationsDatabase.find(d => d.receiptNumber === receiptNumber);
+            const donor = donorsDatabase.find(d => d.id === donation.donorId);
+            
+            if (donation && donor) {
+                document.getElementById('print-content').innerHTML = generateProfessionalReceipt(donation, donor);
+                printModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                
+                // Set current receipt for print buttons
+                document.getElementById('print-professional-btn').dataset.receipt = receiptNumber;
+                document.getElementById('print-simple-btn').dataset.receipt = receiptNumber;
+            }
+        }
+
+        function showDeleteConfirmation(receiptNumber) {
+            const donation = donationsDatabase.find(d => d.receiptNumber === receiptNumber);
+            const donor = donorsDatabase.find(d => d.id === donation.donorId);
+            
+            if (donation && donor) {
+                document.getElementById('delete-receipt-number').textContent = receiptNumber;
+                document.getElementById('delete-donor-name').textContent = donor.name;
+                document.getElementById('delete-amount').textContent = `₹${donation.amount.toLocaleString('en-IN')}`;
+                document.getElementById('confirm-delete').dataset.receipt = receiptNumber;
+                
+                deleteModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // Print functionality - FIXED
+        document.getElementById('print-professional-btn').addEventListener('click', function() {
+            window.print();
+        });
+
+        document.getElementById('print-simple-btn').addEventListener('click', function() {
+            const receiptNumber = this.dataset.receipt;
+            const donation = donationsDatabase.find(d => d.receiptNumber === receiptNumber);
+            const donor = donorsDatabase.find(d => d.id === donation.donorId);
+            
+            if (donation && donor) {
+                const simpleContent = generateSimpleReceipt(donation, donor);
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <html>
+                        <head><title>Receipt - ${receiptNumber}</title></head>
+                        <body style="font-family: monospace; white-space: pre-line; padding: 20px;">
+                            ${simpleContent}
+                        </body>
+                    </html>
+                `);
+                printWindow.document.close();
+                printWindow.print();
+                printWindow.close();
+            }
+        });
+
+        document.getElementById('print-receipt').addEventListener('click', function() {
+            const receiptNumber = document.getElementById('receipt-number').textContent;
+            showPrintModal(receiptNumber);
+            successModal.classList.add('hidden');
+        });
+
+        // Delete confirmation - FIXED
+        document.getElementById('confirm-delete').addEventListener('click', function() {
+            const receiptNumber = this.dataset.receipt;
+            
+            // Remove from database
+            const donationIndex = donationsDatabase.findIndex(d => d.receiptNumber === receiptNumber);
+            if (donationIndex > -1) {
+                donationsDatabase.splice(donationIndex, 1);
+                
+                // Remove from table
+                const row = document.querySelector(`tr[data-receipt="${receiptNumber}"]`);
+                if (row) {
+                    row.remove();
+                }
+                
+                // Update dashboard
+                updateDashboard();
+                
+                deleteModal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+                
+                alert('Donation record deleted successfully!');
+            }
         });
 
         function resetForm() {
@@ -1062,7 +1460,7 @@
         });
 
         // Close modals when clicking outside
-        [donationModal, successModal, viewModal, editModal].forEach(modal => {
+        [donationModal, successModal, viewModal, editModal, deleteModal, printModal].forEach(modal => {
             modal.addEventListener('click', function(e) {
                 if (e.target === this) {
                     this.classList.add('hidden');
@@ -1072,5 +1470,5 @@
             });
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'988e39bdc7dac1d2',t:'MTc1OTUxMzIzNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'988e4e9ba6ae1daf',t:'MTc1OTUxNDA5MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
